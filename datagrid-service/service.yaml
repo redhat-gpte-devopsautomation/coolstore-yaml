@@ -9,7 +9,6 @@ metadata:
     app.openshift.io/runtime: datagrid
   name: datagrid-service
 spec:
-  clusterIP: 172.30.255.35
   ports:
   - name: 7600-tcp
     port: 7600

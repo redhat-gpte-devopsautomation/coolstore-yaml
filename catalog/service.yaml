@@ -9,7 +9,6 @@ metadata:
     app.openshift.io/runtime: spring
   name: catalog
 spec:
-  clusterIP: 172.30.242.93
   ports:
   - name: 8080-tcp
     port: 8080

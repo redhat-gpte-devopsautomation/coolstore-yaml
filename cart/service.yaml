@@ -9,7 +9,6 @@ metadata:
     app.openshift.io/runtime: quarkus
   name: cart
 spec:
-  clusterIP: 172.30.166.136
   ports:
   - name: 8080-tcp
     port: 8080

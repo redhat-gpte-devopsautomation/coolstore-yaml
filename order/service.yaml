@@ -8,9 +8,7 @@ metadata:
     app.kubernetes.io/part-of: order
     app.openshift.io/runtime: quarkus
   name: order
-  namespace: wkosp-coolstore
 spec:
-  clusterIP: 172.30.111.141
   ports:
   - name: 8080-tcp
     port: 8080

@@ -9,7 +9,6 @@ metadata:
     app.openshift.io/runtime: nodejs
   name: coolstore-ui
 spec:
-  clusterIP: 172.30.5.238
   ports:
   - name: 8080-tcp
     port: 8080
