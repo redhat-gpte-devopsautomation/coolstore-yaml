@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: catalog
+    app.kubernetes.io/component: catalog
+    app.kubernetes.io/instance: catalog
+    app.kubernetes.io/part-of: catalog
+    app.openshift.io/runtime: spring
+  name: catalog
+spec:
+  clusterIP: 172.30.242.93
+  ports:
+  - name: 8080-tcp
+    port: 8080
+  - name: 8443-tcp
+    port: 8443
+  - name: 8778-tcp
+    port: 8778
+  selector:
+    app.kubernetes.io/part-of: catalog
+    app.openshift.io/runtime: spring
+    deployment: catalog

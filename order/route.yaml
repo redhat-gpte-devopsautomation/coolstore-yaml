@@ -1,0 +1,18 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+    app: order
+    app.kubernetes.io/component: order
+    app.kubernetes.io/instance: order
+    app.kubernetes.io/part-of: order
+    app.openshift.io/runtime: quarkus
+  name: order
+spec:
+  port:
+    targetPort: 8080-tcp
+  to:
+    kind: Service
+    name: order
+    weight: 100
+  wildcardPolicy: None

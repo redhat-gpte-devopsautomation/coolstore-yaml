@@ -1,0 +1,108 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    app.openshift.io/connects-to: '["inventory-database",{"apiVersion":"apps.openshift.io/v1","kind":"DeploymentConfig","name":"catalog-database"},{"apiVersion":"apps/v1","kind":"Deployment","name":"inventory"}]'
+  labels:
+    app: catalog
+    app.kubernetes.io/component: catalog
+    app.kubernetes.io/instance: catalog
+    app.kubernetes.io/part-of: catalog
+    app.openshift.io/runtime: spring
+  name: catalog
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/part-of: catalog
+      app.openshift.io/runtime: spring
+      deployment: catalog
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/part-of: catalog
+        app.openshift.io/runtime: spring
+        deployment: catalog
+    spec:
+      containers:
+      - env:
+        - name: JAVA_OPTS_APPEND
+          value: -Dspring.profiles.active=openshift
+        - name: SPRING_DATASOURCE_INITIALIZATION_MODE
+          valueFrom:
+            secretKeyRef:
+              key: spring.datasource.initialization-mode
+              name: catalog
+        - name: SPRING_DATASOURCE_INITIALIZE
+          valueFrom:
+            secretKeyRef:
+              key: spring.datasource.initialize
+              name: catalog
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: spring.datasource.password
+              name: catalog
+        - name: SPRING_DATASOURCE_SCHEMA
+          valueFrom:
+            secretKeyRef:
+              key: spring.datasource.schema
+              name: catalog
+        - name: SPRING_DATASOURCE_URL
+          valueFrom:
+            secretKeyRef:
+              key: spring.datasource.url
+              name: catalog
+        - name: SPRING_DATASOURCE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              key: spring.datasource.username
+              name: catalog
+        - name: HYSTRIX_COMMAND_DEFAULT_EXECUTION_ISOLATION_THREAD_TIMEOUTINMILLISECONDS
+          valueFrom:
+            secretKeyRef:
+              key: hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds
+              name: catalog
+        - name: INVENTORY_URL
+          valueFrom:
+            secretKeyRef:
+              key: inventory.url
+              name: catalog
+        - name: SERVER_PORT
+          valueFrom:
+            secretKeyRef:
+              key: server.port
+              name: catalog
+        - name: SPRING_DATASOURCE_CONTINUE_ON_ERROR
+          valueFrom:
+            secretKeyRef:
+              key: spring.datasource.continue-on-error
+              name: catalog
+        - name: FEIGN_HYSTRIX_ENABLED
+          valueFrom:
+            secretKeyRef:
+              key: feign.hystrix.enabled
+              name: catalog
+        image: image-registry.openshift-image-registry.svc:5000/wkosp-coolstore/catalog@sha256:f39b0b96f560ce209c96635a0e4e3aa1840e9986e8827cc9207fa450a0177b81
+        imagePullPolicy: IfNotPresent
+        name: catalog
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        - containerPort: 8443
+          protocol: TCP
+        - containerPort: 8778
+          protocol: TCP
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30

@@ -1,0 +1,27 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  labels:
+    app.openshift.io/runtime: quarkus
+  name: payment
+spec:
+  template:
+    metadata:
+      labels:
+        app.openshift.io/runtime: quarkus
+    spec:
+      containerConcurrency: 0
+      containers:
+      - envFrom:
+        - secretRef:
+            name: payment
+        image: image-registry.openshift-image-registry.svc:5000/wkosp-coolstore/payment@sha256:009c55d447dacca5fba5ea0f17ea594580bfa230c63e825bcdaff08cd6c74564
+        name: user-container
+        readinessProbe:
+          successThreshold: 1
+          tcpSocket:
+            port: 0
+      timeoutSeconds: 300
+  traffic:
+  - latestRevision: true
+    percent: 100

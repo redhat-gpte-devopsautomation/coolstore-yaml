@@ -1,0 +1,26 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  labels:
+    app.kubernetes.io/name: coolstore-ui
+    app.kubernetes.io/version: 1.0-SNAPSHOT
+    app.openshift.io/runtime: nodejs
+  name: coolstore-ui
+spec:
+  failedBuildsHistoryLimit: 5
+  nodeSelector: null
+  output:
+    to:
+      kind: ImageStreamTag
+      name: coolstore-ui:latest
+  runPolicy: Serial
+  source:
+    type: Binary
+  strategy:
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        name: nodejs:10-ubi8
+        namespace: openshift
+    type: Source
+  successfulBuildsHistoryLimit: 5

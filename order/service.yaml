@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: order
+    app.kubernetes.io/component: order
+    app.kubernetes.io/instance: order
+    app.kubernetes.io/part-of: order
+    app.openshift.io/runtime: quarkus
+  name: order
+  namespace: wkosp-coolstore
+spec:
+  clusterIP: 172.30.111.141
+  ports:
+  - name: 8080-tcp
+    port: 8080
+  - name: 8443-tcp
+    port: 8443
+  - name: 8778-tcp
+    port: 8778
+  selector:
+    app.kubernetes.io/part-of: order
+    app.openshift.io/runtime: quarkus
+    deployment: order

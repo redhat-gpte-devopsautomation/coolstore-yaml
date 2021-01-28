@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"datagrid-service"},{"apiVersion":"apps/v1","kind":"Deployment","name":"catalog"}]'
+  labels:
+    app: cart
+    app.kubernetes.io/component: cart
+    app.kubernetes.io/instance: cart
+    app.kubernetes.io/part-of: cart
+    app.openshift.io/runtime: quarkus
+  name: cart
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/part-of: cart
+      app.openshift.io/runtime: quarkus
+      deployment: cart
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/part-of: cart
+        app.openshift.io/runtime: quarkus
+        deployment: cart
+    spec:
+      containers:
+      - env:
+        - name: MP_MESSAGING_OUTGOING_ORDERS_BOOTSTRAP_SERVERS
+          valueFrom:
+            secretKeyRef:
+              key: mp.messaging.outgoing.orders.bootstrap.servers
+              name: cart
+        - name: MP_MESSAGING_OUTGOING_ORDERS_TOPIC
+          valueFrom:
+            secretKeyRef:
+              key: mp.messaging.outgoing.orders.topic
+              name: cart
+        - name: QUARKUS_INFINISPAN_CLIENT_SERVER_LIST
+          valueFrom:
+            secretKeyRef:
+              key: quarkus.infinispan-client.server-list
+              name: cart
+        image: image-registry.openshift-image-registry.svc:5000/wkosp-coolstore/cart@sha256:cebe6b8cb9801b39a1e21f515c9ce41db3aa1b25e2e545bd873f0905f95ce314
+        imagePullPolicy: IfNotPresent
+        name: cart
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        - containerPort: 8443
+          protocol: TCP
+        - containerPort: 8778
+          protocol: TCP
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30

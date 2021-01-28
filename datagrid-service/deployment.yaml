@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: datagrid-service
+    app.kubernetes.io/component: datagrid-service
+    app.kubernetes.io/instance: datagrid-service
+    app.kubernetes.io/part-of: cart
+    app.openshift.io/runtime: datagrid
+  name: datagrid-service
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/part-of: cart
+      app.openshift.io/runtime: datagrid
+      deployment: datagrid-service
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/part-of: cart
+        app.openshift.io/runtime: datagrid
+        deployment: datagrid-service
+    spec:
+      containers:
+      - image: docker.io/jboss/infinispan-server:10.0.0.Beta3
+        imagePullPolicy: IfNotPresent
+        name: datagrid-service
+        ports:
+        - containerPort: 8888
+          protocol: TCP
+        - containerPort: 9990
+          protocol: TCP
+        - containerPort: 11211
+          protocol: TCP
+        - containerPort: 11222
+          protocol: TCP
+        - containerPort: 57600
+          protocol: TCP
+        - containerPort: 7600
+          protocol: TCP
+        - containerPort: 8080
+          protocol: TCP
+        - containerPort: 8181
+          protocol: TCP
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30

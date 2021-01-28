@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: coolstore-ui
+    app.kubernetes.io/component: coolstore-ui
+    app.kubernetes.io/instance: coolstore-ui
+    app.kubernetes.io/part-of: coolstore-ui
+    app.openshift.io/runtime: nodejs
+  name: coolstore-ui
+spec:
+  clusterIP: 172.30.5.238
+  ports:
+  - name: 8080-tcp
+    port: 8080
+  selector:
+    app.kubernetes.io/part-of: coolstore-ui
+    app.openshift.io/runtime: nodejs
+    deployment: coolstore-ui

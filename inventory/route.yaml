@@ -1,0 +1,18 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+    app: inventory
+    app.kubernetes.io/component: inventory
+    app.kubernetes.io/instance: inventory
+    app.kubernetes.io/part-of: inventory
+    app.openshift.io/runtime: quarkus
+  name: inventory
+spec:
+  port:
+    targetPort: 8080-tcp
+  to:
+    kind: Service
+    name: inventory
+    weight: 100
+  wildcardPolicy: None

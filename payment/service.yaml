@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    serving.knative.dev/creator: system:admin
+    serving.knative.dev/lastModifier: system:admin
+  labels:
+    app.openshift.io/runtime: quarkus
+    serving.knative.dev/route: payment
+    serving.knative.dev/service: payment
+  name: payment
+  namespace: wkosp-coolstore
+spec:
+  externalName: kourier-internal.knative-serving-ingress.svc.cluster.local
+  ports:
+  - name: http2
+    port: 80
+  type: ExternalName

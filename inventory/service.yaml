@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: inventory
+    app.kubernetes.io/component: inventory
+    app.kubernetes.io/instance: inventory
+    app.kubernetes.io/part-of: inventory
+    app.openshift.io/runtime: quarkus
+  name: inventory
+spec:
+  clusterIP: 172.30.135.152
+  ports:
+  - name: 8080-tcp
+    port: 8080
+  - name: 8443-tcp
+    port: 8443
+  - name: 8778-tcp
+    port: 8778
+  selector:
+    app.kubernetes.io/part-of: inventory
+    app.openshift.io/runtime: quarkus
+    deployment: inventory
