@@ -1,0 +1,3 @@
+= YAML Manifests for the Coolstore Microservices Application
+
+These YAML manifests will help in deploying the Coolstore Microservices Application to a Red Hat OpenShift cluster.
