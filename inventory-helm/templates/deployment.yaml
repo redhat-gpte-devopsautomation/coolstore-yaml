@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    app.openshift.io/connects-to: '["inventory-database",{"apiVersion":"apps/v1","kind":"Deployment","name":"inventory-database"}]'
+  labels:
+    {{ include "inventory.labels" . | nindent 4 }}
+    ;
+  name: {{ include "inventory.name" . }}
+spec:
+  progressDeadlineSeconds: 600
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      {{ include "inventory.selectorLabels " . | nindent 6 }}
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        {{ include "inventory.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - env:
+        - name: quarkus.datasource.driver
+          value: org.postgresql.Driver
+        - name: quarkus.datasource.password
+          value: {{ include "inventory.name" . | nindent 10 }}
+        - name: quarkus.datasource.url
+          value: jdbc:postgresql://inventory-database:5432/inventory
+        - name: quarkus.datasource.username
+          value: {{ include "inventory.name" . | nindent 10 }}
+        - name: QUARKUS_DATASOURCE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              key: quarkus.datasource.username
+              name: {{ include "inventory.name" . | nindent 14 }}
+        - name: QUARKUS_DATASOURCE_DRIVER
+          valueFrom:
+            secretKeyRef:
+              key: quarkus.datasource.driver
+              name: {{ include "inventory.name" | nindent 14 }}
+        - name: QUARKUS_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: quarkus.datasource.password
+              name: {{ include "inventory.name" | nindent 14 }}
+        - name: QUARKUS_DATASOURCE_URL
+          valueFrom:
+            secretKeyRef:
+              key: quarkus.datasource.url
+              name: {{ include "inventory.name" | nindent 14 }}
+        image: "{{ required "You must include image.repository and image.tag" .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        name: {{ .Release.Name }}
+        ports:
+        - containerPort: {{ .Values.service.port1 }}
+          protocol: TCP
+        - containerPort: {{ .Values.service.port2 }}
+          protocol: TCP
+        - containerPort: {{ .Values.service.port3 }}
+          protocol: TCP
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30

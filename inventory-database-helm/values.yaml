@@ -1,0 +1,62 @@
+# Default values for inventory-database.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: image-registry.openshift-image-registry.svc:5000/openshift/postgresql
+  pullPolicy: IfNotPresent
+  tag: 10-el8
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+service:
+  port: 5432
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: inventory-wkosp-coolstore.apps.cluster-wkosp.dynamic.opentlc.com
+      paths: []
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+storage:
+  requests:
+    size: 1Gi
+
+dbCredentials:
+  name: aW52ZW50b3J5 
+  password: aW52ZW50b3J5
+  user: aW52ZW50b3J5

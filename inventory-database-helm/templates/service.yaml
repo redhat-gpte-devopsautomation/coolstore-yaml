@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    {{ include "inventory-database.appLabels" . | nindent 4 }}
+  name: {{ include "inventory-database.name" . | nindent 2 }}
+spec:
+  ports:
+  - name: postgresql
+    port: {{ required "You must include service.port value" .Values.service.port }}
+  selector:
+    name: {{ include "inventory-database.name" . | nindent 4 }}
